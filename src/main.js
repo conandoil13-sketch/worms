@@ -1,4 +1,3 @@
-import "./style.css";
 import { AudioEngine } from "./audio.js";
 import { SnakeGame } from "./game.js";
 import { createUI } from "./ui.js";
