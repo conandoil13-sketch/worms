@@ -26,6 +26,21 @@ function isSamePoint(a, b) {
     return a.x === b.x && a.y === b.y;
 }
 
+function drawRoundedRect(ctx, x, y, width, height, radius) {
+    const safeRadius = Math.min(radius, width / 2, height / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + safeRadius, y);
+    ctx.lineTo(x + width - safeRadius, y);
+    ctx.arcTo(x + width, y, x + width, y + safeRadius, safeRadius);
+    ctx.lineTo(x + width, y + height - safeRadius);
+    ctx.arcTo(x + width, y + height, x + width - safeRadius, y + height, safeRadius);
+    ctx.lineTo(x + safeRadius, y + height);
+    ctx.arcTo(x, y + height, x, y + height - safeRadius, safeRadius);
+    ctx.lineTo(x, y + safeRadius);
+    ctx.arcTo(x, y, x + safeRadius, y, safeRadius);
+    ctx.closePath();
+}
+
 export class SnakeGame {
     constructor({ canvas, scoreBoard, logDisplay, startOverlay, resultOverlay, artPreviewContainer, audio, equippedArtwork = null }) {
         this.canvas = canvas;
@@ -677,8 +692,7 @@ export class SnakeGame {
                 const previous = snake.prevBody[index] || current;
                 const dx = (previous.x + (current.x - previous.x) * (this.started ? lerp : 0)) * TILE_SIZE;
                 const dy = (previous.y + (current.y - previous.y) * (this.started ? lerp : 0)) * TILE_SIZE;
-                this.ctx.beginPath();
-                this.ctx.roundRect(dx + 1, dy + 1, TILE_SIZE - 2, TILE_SIZE - 2, index === 0 ? 6 : 4);
+                drawRoundedRect(this.ctx, dx + 1, dy + 1, TILE_SIZE - 2, TILE_SIZE - 2, index === 0 ? 6 : 4);
                 this.ctx.fill();
             });
             this.ctx.shadowBlur = 0;
